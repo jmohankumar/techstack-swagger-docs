@@ -1,0 +1,255 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+swagger: '2.0'
+info:
+  title: API
+  description: API for test.api.com
+  version: "1.0.0"
+# array of all schemes that your API supports
+schemes:
+  - https
+# will be prefixed to all paths
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /products:
+    get:
+      summary: Product Types
+      description: |
+        The Products endpoint returns information about the *Uber* products
+        offered at a given location. The response includes the display name
+        and other details about each product, and lists the products in the
+        proper display order.
+      parameters:
+        - name: latitude
+          in: query
+          description: Latitude component of location.
+          required: true
+          type: number
+          format: double
+        - name: longitude
+          in: query
+          description: Longitude component of location.
+          required: true
+          type: number
+          format: double
+      tags:
+        - Products
+      responses:
+        200:
+          description: An array of products
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Product'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /me:
+    get:
+      summary: User Profile
+      description: The User Profile endpoint returns information about the Uber user that has authorized with the application.
+      tags:
+        - User
+      responses:
+        200:
+          description: Profile information for a user
+          schema:
+            $ref: '#/definitions/UserProfile'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /history:
+    get:
+      summary: User Activity
+      description: The User Activity endpoint returns data about a user's lifetime orders. The response will include order details. <br><br> The history array in the response will have a maximum length based on the limit parameter. The response value count may exceed limit, therefore subsequent API requests may be necessary.
+      parameters:
+        - name: offset
+          in: query
+          type: integer
+          format: int32
+          description: Offset the list of returned results by this amount. Default is zero.
+        - name: limit
+          in: query
+          type: integer
+          format: int32
+          description: Number of items to retrieve. Default is 5, maximum is 100.
+      tags:
+        - User
+      responses:
+        200:
+          description: History information for the given user
+          schema:
+            $ref: '#/definitions/Activities'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+
+definitions:
+  Product:
+    type: object
+    properties:
+      product_id:
+        type: integer
+        format: int32
+        description: Unique identifier representing a specific product.
+      description:
+        type: string
+        description: Description of product.
+      display_name:
+        type: string
+        description: Display name of product.
+      units:
+        type: string
+        description: Number of units of a product. For example, 4 units.
+      images:
+        type: string
+        description: Image URL representing the product.
+      tag:
+        type: array
+        description: product tags
+        items:
+          type: string
+  
+  UserProfile:
+    type: object
+    properties:
+      first_name:
+        type: string
+        description: First name of the Uber user.
+      last_name:
+        type: string
+        description: Last name of the Uber user.
+      email:
+        type: string
+        description: Email address of the Uber user
+      picture:
+        type: string
+        description: Image URL of the Uber user.
+      promo_code:
+        type: string
+        description: Promo code of the Uber user.
+  
+  Activity:
+    type: object
+    properties:
+      uuid:
+        type: string
+        description: Unique identifier for the activity
+  
+  Activities:
+    type: object
+    properties:
+      offset:
+        type: integer
+        format: int32
+        description: Position in pagination.
+      limit:
+        type: integer
+        format: int32
+        description: Number of items to retrieve (100 max).
+      count:
+        type: integer
+        format: int32
+        description: Total number of items available.
+      history:
+        type: array
+        items:
+          $ref: '#/definitions/Activity'
+  
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
+  
+  provider:
+    type: object
+    required:
+      - provider_id
+      - address
+    properties:
+      provider_id:
+        type: integer
+        description: Unique identifier representing a specific provider.
+      description:
+        type: string
+        description: Description of product.
+      address:
+        type: string
+        description: Address of the provider.
+      gst:
+        type: string
+        description: GST information of the provider.
+  
+  provider_product:
+    type: object
+    required:
+      - provider_id
+      - product_id
+    properties:
+      product_id:
+        "$ref": "#/definitions/Product"
+      provider_id:
+        "$ref": "#/definitions/provider"
+  
+  purchase_order:
+    type: object
+    properties:
+      id: 
+        type: string
+        description: UID for purchase_order
+      
+  sales:
+    type: object
+    required:
+      - provider_product_id
+    properties:
+      provider_product_id:
+        "$ref": "#/definitions/provider_product"
+      units_sold:
+        type: integer
+        description: Number of units sold
+      sold_on:
+        type: string
+        description: Product sold date.
+      customer_name:
+        type: string
+        description: Name of the customer.
+      price_per_unit:
+        type: number
+        description: price per unit
+      payment_monde:
+        type: string
+        description: Mode of the payment. Debit/Credit card or Wallet transfer Paytm
+  
+  product_category:
+    type: object
+    required:
+      - category_id
+      - name
+    properties:
+      category_id:
+        type: integer
+      name:
+        type: string
+  
+  inventory:
+    type: object
+    properties:
+      id: 
+        type: integer
+        description: uniqe identifier for inventory
+      product_id:
+        "$ref": "#/definitions/Product"
+      provider_id:
+        "$ref": "#/definitions/provider"
