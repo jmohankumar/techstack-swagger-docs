@@ -1,4 +1,4 @@
-# this is an example of the Uber API
+# this is an example of the  API
 # as a demonstration of an API spec in YAML
 swagger: '2.0'
 info:
@@ -17,23 +17,7 @@ paths:
     get:
       summary: Product Types
       description: |
-        The Products endpoint returns information about the *Uber* products
-        offered at a given location. The response includes the display name
-        and other details about each product, and lists the products in the
-        proper display order.
-      parameters:
-        - name: latitude
-          in: query
-          description: Latitude component of location.
-          required: true
-          type: number
-          format: double
-        - name: longitude
-          in: query
-          description: Longitude component of location.
-          required: true
-          type: number
-          format: double
+        The Products endpoint returns information about products
       tags:
         - Products
       responses:
@@ -50,7 +34,7 @@ paths:
   /me:
     get:
       summary: User Profile
-      description: The User Profile endpoint returns information about the Uber user that has authorized with the application.
+      description: The User Profile endpoint returns information about the  user that has authorized with the application.
       tags:
         - User
       responses:
@@ -120,19 +104,19 @@ definitions:
     properties:
       first_name:
         type: string
-        description: First name of the Uber user.
+        description: First name of the user.
       last_name:
         type: string
-        description: Last name of the Uber user.
+        description: Last name of the user.
       email:
         type: string
-        description: Email address of the Uber user
+        description: Email address of the user
       picture:
         type: string
-        description: Image URL of the Uber user.
+        description: Image URL of the user.
       promo_code:
         type: string
-        description: Promo code of the Uber user.
+        description: Promo code of the user.
   
   Activity:
     type: object
